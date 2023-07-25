@@ -75,13 +75,17 @@ async def znak_command(message: types.Message, state: FSMContext):
     date = message.text.split('.')
     if (len(date) == 2) and (int(date[0]) <= 12) and (int(date[0]) >= 1) and (int(date[1]) <= 31) and (int(date[1]) >= 1):
         znak = converted_date(f'{date[0]}-{date[1]}', False)
-        comisar = random.choice(list_zod_com[znak])
-        comisar = comisar[0]
-        photo = open(f'photo/{comisar}.png', 'rb')
-        await bot.send_photo(chat_id=message.chat.id, photo=photo)
-        await message.answer(f'Вы - {comisar}, {znak.capitalize()}\n'
-                             f'\n'
-                             f'{list_zod_op[znak]}')
+        if znak == 'cкорпион':
+            await message.answer("К сожалению, среди наших коммисаров нет скорпионов.\n"
+                                 "Нам тоже от этого хочется плакать(")
+        else:
+            comisar = random.choice(list_zod_com[znak])
+            comisar = comisar[0]
+            photo = open(f'photo/{comisar}.png', 'rb')
+            await bot.send_photo(chat_id=message.chat.id, photo=photo)
+            await message.answer(f'Вы - {comisar}, {znak.capitalize()}\n'
+                                 f'\n'
+                                 f'{list_zod_op[znak]}')
     else:
         await message.answer('Дата неверна')
 
@@ -103,7 +107,7 @@ async def birth_command(message: types.Message, state: FSMContext):
         comis = minimal_razn(znak)
         photo = open(f'photo/{comis}.png', 'rb')
         await bot.send_photo(chat_id=message.chat.id, photo=photo)
-        await message.answer(comis)
+        await message.answer(f'Вы - {comis}')
     else:
         await message.answer('Дата неверна')
 
