@@ -33,15 +33,17 @@ async def process_start_command(message: types.Message):
 
 @dp.message_handler(commands=['help'])
 async def process_help_command(message: types.Message):
-    await message.answer("   Если ты хочешь узнать песни в моей библиотеке, то напиши команду 'библиотека песен' или нажми"
+    await message.answer("  Если ты хочешь узнать песни в моей библиотеке, то напиши команду 'библиотека песен' или нажми"
                          " соответствующую кнопку.\n"
-                         "   Если ты хочешь увидеть текст и аккорды песни из моей библиотеки, то просто напиши"
+                         "  Если ты хочешь увидеть текст и аккорды песни из моей библиотеки, то просто напиши"
                          " её название, как в библиотеке\n"
-                         "   Чтобы не искать песенник по всем беседам, просто напиши команду 'песенник' или нажми "
+                         "  Если ты несчасный гитарист, который забыл аккорды, то просто напиши 'библиотека аккордов',"
+                         " или нажми соответствующую кнопку\n"
+                         "  Чтобы не искать песенник по всем беседам, просто напиши команду 'песенник' или нажми "
                          "соответствующую кнопку\n"
-                         "   Если ты хочешь узнать, какой ты комиссар по знаку зодиака, то напиши команду 'кто я по зз' "
+                         "  Если ты хочешь узнать, какой ты комиссар по знаку зодиака, то напиши команду 'кто я по зз' "
                          "или нажми на соответсвующую кнопку. Затем следуй моим указаниям.\n"
-                         "   Если ты хочешь узнать, какой ты комиссар по дню рождения, то напиши команду 'кто я по дню рождения' "
+                         "  Если ты хочешь узнать, какой ты комиссар по дню рождения, то напиши команду 'кто я по дню рождения' "
                          "или нажми на соответсвующую кнопку. Затем следуй моим указаниям.")
 
 
@@ -75,6 +77,8 @@ async def znak_command(message: types.Message, state: FSMContext):
         znak = converted_date(f'{date[0]}-{date[1]}', False)
         comisar = random.choice(list_zod_com[znak])
         comisar = comisar[0]
+        photo = open(f'photo/{comisar}.png', 'rb')
+        await bot.send_photo(chat_id=message.chat.id, photo=photo)
         await message.answer(f'Вы - {comisar}, {znak.capitalize()}\n'
                              f'\n'
                              f'{list_zod_op[znak]}')
@@ -97,6 +101,8 @@ async def birth_command(message: types.Message, state: FSMContext):
     if (len(date) == 2) and (int(date[0]) <= 12) and (int(date[0]) >= 1) and (int(date[1]) <= 31) and (int(date[1]) >= 1):
         znak = converted_date(f'{date[0]}-{date[1]}', True)
         comis = minimal_razn(znak)
+        photo = open(f'photo/{comis}.png', 'rb')
+        await bot.send_photo(chat_id=message.chat.id, photo=photo)
         await message.answer(comis)
     else:
         await message.answer('Дата неверна')
@@ -115,4 +121,4 @@ async def song_text(message: types.Message):
         await message.answer('Такой песни нет в моей библиотеке, или вы указали её название неверно')
 
 if __name__ == '__main__':
-    executor.start_polling(dp)
+    executor.start_polling(dp, skip_updates=True)
